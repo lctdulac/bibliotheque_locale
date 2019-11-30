@@ -1,0 +1,35 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+    <h1>Mon compte</h1>
+
+    
+
+    <br>
+    Bonjour, <b> {{ user.get_username }}. </b> 
+    <br>
+    Vous êtes actuellement abonné en tant que <b> {{ statut }}</b>.
+    <br>
+    {% if bad_user == 1 %} <p style="color:Red;"> Vous êtes actuellement blacklisté pour trop de retards jusqu'au <b> {{date_fin_bad_user}} </b> {% elif nb_autres == 2 and nb_livres == 3 %} <b style="color:Red;"> Vous avez atteint le nombre maximum d'emprunts. </b> {% else %} <b style="color:Green;"> Vous êtes autorisés à emprunter. </b> {% endif %} </p>
+    <br>
+    Nous sommes le <strong>{{ date }}</strong>
+
+    {% if emprunt_list %}
+    <p> Nombre de livres empruntés: <strong>{{ nb_livres }}/3</strong> | Nombre de médias empruntés: <strong>{{ nb_autres }}/2</strong> | Nombre de retards cette année: <strong style="color:Red;">{{ nb_retards }}/3</strong> </p>
+    <ul>
+
+      {% for emp in emprunt_list %} 
+      <li>
+        <a href="{% url 'ouvrage-detail' emp.ouvrage.pk %}">{{emp.ouvrage.titre}} ({{emp.ouvrage.get_type_display}})</a> 
+        (<b>emprunté:</b> {{ emp.date_emprunt }}) <br>
+        <b> Votre date de retour: </b> {{ emp.date_retour }}) | {% if emp.is_overdue %} <b style="color:Red;"> VOUS ÊTES EN RETARD ! Pénalité à payer dès que possible: {{ emp.pénalité }}€</b> {% else %} <b style="color:Green;"> Vous êtes en règle. </b> {% endif %}     
+      </li>
+      {% endfor %}
+
+    </ul>
+
+    {% else %}
+      <br>
+      <p>Vous n'avez pas encore emprunté d'ouvrages.</p> 
+    {% endif %}       
+{% endblock %}

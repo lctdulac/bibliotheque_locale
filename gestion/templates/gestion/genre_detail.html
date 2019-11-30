@@ -1,0 +1,20 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <h1>Genre: {{ genre.titre }}</h1>
+ <br>
+
+ 
+  <div style="margin-left:20px;margin-top:20px">
+    <h4>Oeuvres de ce genre :</h4>
+
+    {% for ouvr in genre.ouvrage_set.all %}
+      <hr>
+      <p><a href="{% url 'ouvrage-detail' ouvr.pk %}"> {{ouvr.titre}} ({{ouvr.année}}) [{{ouvr.get_type_display}}] </a> </p> 
+
+    {% endfor %}
+  </div>
+
+
+
+{% endblock %}

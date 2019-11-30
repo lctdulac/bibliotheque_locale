@@ -1,0 +1,38 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <h1>Titre: {{ ouvrage.titre }}</h1>
+  <br>
+  {% if ouvrage.autorisé == 1 %} <p style="color:Green;"><strong>Ouvrage autorisé au prêt</strong></p> {% else %} <p style="color:Red;"><strong>Ouvrage non autorisé au prêt</strong></p> {% endif %}
+  <p><strong>Type:</strong> {{ouvrage.get_type_display}} </p>
+  <p><strong>Auteur:</strong> <a href="{{ ouvrage.auteur.get_absolute_url }}">{{ ouvrage.auteur }}</a></p>
+  <p><strong>Année:</strong> {{ ouvrage.année }} </p>
+  <p><strong>Genres:</strong>  
+  {% for g in ouvrage.genre.all %}
+    <li> <a href="{{ g.get_absolute_url }}">{{ g.titre }}</a> </li>
+  {% endfor %}
+  <br>
+  <p><strong>Nombre de copies restantes :</strong> {{ ouvrage.nb_copies }}</p>
+  
+
+  {% if user.get_username == "admin" %}
+
+  <div style="margin-left:20px;margin-top:20px">
+
+    <h4>Emprunts :</h4>
+
+    {% for emp in ouvrage.emprunt_set.all %}
+      <hr>
+      <p class="text-muted"><strong>Emprunteur:</strong> {{emp.borrower}}</p>
+      <p><strong>Devrait être retourné avant le {{ emp.date_retour }}</strong></p>
+
+      {% if emp.nb_copies > 0 %}
+        
+      {% endif %}
+      
+      <p class="text-muted"><strong>Id:</strong> {{emp.ouvrage.id}}</p>
+    {% endfor %}
+  </div>
+
+  {% endif %}
+{% endblock %}

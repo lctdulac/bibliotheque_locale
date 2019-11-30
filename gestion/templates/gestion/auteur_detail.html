@@ -1,0 +1,26 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <h1>Auteur: {{ auteur.nom }}, {{ auteur.prénom }}</h1>
+  <br>
+
+  <p><strong>Naissance:</strong> {{ auteur.naissance }}</p> <!-- author detail link not yet defined --> 
+  <p><strong>Mort:</strong> {{ auteur.mort }} </p> 
+  <p><strong><a href={{ auteur.lien }}>Lien Wikipédia</a></strong></p>
+  {% load static %}
+  {% if auteur.img %}
+    <img src="{{STATIC_URL}}{{ auteur.img.url }}" alt="" /> 
+  {% else %}
+    <p><i>Pas encore d'image pour cet auteur.</i>  </p> 
+  {% endif %}
+  <div style="margin-left:20px;margin-top:20px">
+    <h4>Oeuvres de cet auteur :</h4>
+
+    {% for ouvr in auteur.ouvrage_set.all %}
+      <hr>
+      <p><a href="{% url 'ouvrage-detail' ouvr.pk %}"> {{ouvr.titre}} ({{ouvr.année}}) [{{ouvr.get_type_display}}] </a> </p> 
+      
+    {% endfor %}
+  </div>
+
+{% endblock %}

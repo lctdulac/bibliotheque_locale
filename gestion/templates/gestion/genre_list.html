@@ -1,0 +1,17 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <h1>Liste des genres</h1>
+  <br>
+  {% if genre_list %}
+  <ul>
+    {% for genre in genre_list %}
+      <li>
+        <a href="{{ genre.get_absolute_url }}">{{ genre.titre }}</a>  <!-- {{ genre.nb_ouvrage }} -->
+      </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+    <p>Il n'y a pas de genres enregistrés.</p>
+  {% endif %}       
+{% endblock %}

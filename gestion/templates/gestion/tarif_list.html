@@ -1,0 +1,15 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <h1>Tarifs actuellement en vigueur</h1>
+  <br>
+  {% if tarif_list %}
+  <ul>
+    {% for tarif in tarif_list %}
+      <li> <b> {{ tarif.get_statut_display }} </b> : {{ tarif.prix }}€</li>
+    {% endfor %}
+  </ul>
+  {% else %}
+    <p>Il n'y a pas de tarifs enregistrés.</p>
+  {% endif %}       
+{% endblock %}

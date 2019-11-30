@@ -1,0 +1,24 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <h1>Accueil de la médiathèque Franck Debouck</h1>
+  <br>
+  <p>Bienvenue sur le site de la médiathèque Franck Debouck, un site web développé par <em>Lancelot Prégniard et Rosie Wang</em>.</p>
+  <p class="text-muted">Vous pouvez consulter les ressources de la bibliothèque, ainsi que vos emprunts en cours.</p>
+  <br>
+  <h2>Nous sommes le {{ date_today }}.</h2>
+  <br>
+  <ul>
+    <li><strong>Nombre d'ouvrages :</strong> {{ num_ouvrages }}</li>
+    <li><strong>Copies disponibles :</strong> {{ num_ouvrages_dispo }}</li>
+    <li><strong>Nombre d'emprunts en cours :</strong> {{ num_emprunts }}</li>
+    {% if user.get_username == "admin" %}
+      <br>
+      <i> Informations admin : </i>
+      <li style="color:Green;"><strong>Nombre d'emprunts en règle : {{ num_en_regle }} </strong> </li>
+      <li style="color:Red;"><strong>Nombre d'emprunts en retard :</strong> {{ num_retard }} </li>
+    {% endif %}
+  </ul>
+<br>
+  <p>Vous avez visité cette page {{ num_visits }}{% if num_visits == 1 %} fois{% else %} fois{% endif %}.</p>
+{% endblock %}
