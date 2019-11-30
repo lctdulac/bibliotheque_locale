@@ -16,6 +16,7 @@ from datetime import datetime, timezone, timedelta
 import uuid
 
 
+
 class Profile(models.Model):
     nb_livres = models.IntegerField(default=0)
     nb_autres = models.IntegerField(default=0)
@@ -25,7 +26,14 @@ class Profile(models.Model):
     deuxième_retard = models.DateTimeField(null=True, blank=True, default=None)
     troisième_retard = models.DateTimeField(null=True, blank=True, default=None)
 
-    bad_user = models.IntegerField(default=0)
+
+    BOOL_CHOICE = (
+        (0, 0),
+        (1, 1)
+    )
+    bad_user = models.IntegerField(default=0, choices=BOOL_CHOICE)
+    
+    
     date_bad_user = models.DateTimeField(null=True, blank=True, default=None)
 
     user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, blank=True, unique=True)
@@ -95,7 +103,13 @@ class Genre(models.Model):
 class Ouvrage(models.Model):
     titre = models.CharField(max_length=100)
     nb_copies = models.IntegerField(default=1)
-    autorisé = models.IntegerField(default=1)
+
+    BOOL_CHOICE = (
+        (0, 0),
+        (1, 1)
+    )
+
+    autorisé = models.IntegerField(default=1, choices=BOOL_CHOICE)
 
     OUVRAGES_TYPE = (
         ('r', 'Revue'),
@@ -151,7 +165,13 @@ class Emprunt(models.Model):
     objects = EmpruntQuerySet.as_manager()
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, help_text='Unique ID pour cet emprunt')
     date_emprunt = models.DateTimeField()
-    retard = models.IntegerField(default=0)
+
+    BOOL_CHOICE = (
+        (0, 0),
+        (1, 1)
+    )
+
+    retard = models.IntegerField(default=0, choices=BOOL_CHOICE)
     pénalité = models.IntegerField(default=0)
 
     ouvrage = models.ForeignKey(Ouvrage, on_delete=models.SET_NULL, null=True)
@@ -164,11 +184,6 @@ class Emprunt(models.Model):
         """Fonction requise par Django pour manipuler les objets Ouvrages dans la base de données."""
         return f'{self.id} ({self.ouvrage.titre})'
 
-    # @classmethod
-    # def create(cls, id):
-    #     emprunt = cls(id=id)
-    #     emprunt.ouvrage.nb_copies -= 1
-    #     return emprunt
 
     ## Triggers:
     def save(self, *args, **kwargs):

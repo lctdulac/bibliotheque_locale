@@ -1,0 +1,30 @@
+####### HOW TO INSTALL
+
+### 1. Install the required python packages in the chosen environment
+### 2. Create a new mysql schema named bibliothèque_django 
+
+$ mysql -u yourusername -p
+$ msyql> create schema bibliothèque_django;
+
+### 3. Go to the web_local_library directory
+### 4. Run the following commands in your CLI:
+
+$ python manage.py loaddata db.json
+$ python manage.py runserver
+
+### 5. Access the user page via :
+
+http://localhost:8000/gestion (http://localhost:8000/ should also work)
+
+### 6. Access the admin page via :
+
+http://localhost:8000/admin
+
+
+###### HOW TO USE
+
+### 1. Create an user via the User tab on the admin dashboard
+### 2. Create a Profile pointing towards this User
+### 3. Create new Ouvrages instances, Author instances, etc...
+### 4. Create new Emprunts instances 
+### 5. Login to the user page with the chosen credentials 

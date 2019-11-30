@@ -8,20 +8,12 @@ from django.shortcuts import get_object_or_404
 from datetime import datetime, timezone, timedelta, date
 
 
-# Create your views here.
+## Fonction annexe
 
-def index(request):
-    """View function for home page of site."""
+def update_and_populate_db(date_today):
 
-    # Generate counts of some of the main objects
-    date_today = datetime.now(timezone.utc)
-    num_ouvrages = Ouvrage.objects.all().count()
-    num_emprunts = Emprunt.objects.all().count()
-    num_ouvrages_dispo = Ouvrage.objects.aggregate(Sum('nb_copies'))['nb_copies__sum']
-    num_retard = Emprunt.objects.filter(retard = 1).all().count()
-    num_en_regle = num_emprunts - num_retard
+    ''' Fonction qui, à chaque arrivée sur la page, met à jour le statut des retards et des pénalités'''
 
-    # A chaque arrivée sur la page, met à jour le statut des retards et des pénalités
 
     # Met à jour les retards sur les emprunts
     for emp in Emprunt.objects.all():
@@ -57,10 +49,6 @@ def index(request):
 
         ## Réinitialisation des dates de retard
 
-        # nb_ret = brw.nb_retards # nombre de retards actuel
-        # new_nb_ret = Emprunt.objects.filter(borrower=brw, retard=1).all().count() # nouveau nombre de retards après update des emprunts. ## TODO : ne prend pas en compte quand on avait déjà 2 retards et qu'on passe à 2. 
-
-        # Réinitialisation du premier retard
         if brw.premier_retard != None:
             if date_today - (brw.premier_retard + timedelta(days=365)) > timedelta(days=0):
                 brw.premier_retard = brw.deuxième_retard
@@ -70,49 +58,31 @@ def index(request):
 
         brw.save()
 
-        
 
-        # if (new_nb_ret-old_nb_ret == 1) and (new_nb_ret == 1): # si détection d'un tout premier retard
-        #     print("Premier retard pour",brw.user.username)
-        #     brw.premier_retard = date_today
-        #     brw.nb_retards = 1
+## Vues du site
 
 
-        # if (new_nb_ret-old_nb_ret == 1) and (new_nb_ret == 2):
-        #     print("Second retard pour",brw.user.username)
-        #     # if (brw.premier_retard - timedelta(days=365)) > timedelta(days=0): # réinitialisation du premier retard car plus d'un an
-        #     #     brw.premier_retard = date_today
-        #     #     brw.nb_retards = 1
-        #     brw.nb_retards = new_nb_ret
-        #     # brw.second_retard = date_today
+def index(request):
+    """Vue de la page d'accueil"""
+
+    # Etat de la base de donnée
+    date_today = datetime.now(timezone.utc)
+    num_ouvrages = Ouvrage.objects.all().count()
+    num_emprunts = Emprunt.objects.all().count()
+    num_ouvrages_dispo = Ouvrage.objects.aggregate(Sum('nb_copies'))['nb_copies__sum']
+    num_retard = Emprunt.objects.filter(retard = 1).all().count()
+    num_en_regle = num_emprunts - num_retard
 
 
-        # if (new_nb_ret-old_nb_ret == 1) and (new_nb_ret >= 3):
-        #     print("Troisieme retard pour",brw.user.username)
-        #     durée_premier_retard = (date_today - brw.premier_retard)
-        #     if durée_premier_retard < timedelta(days=365):
-        #         brw.bad_user=1
-        #         brw.nb_retards = new_nb_ret
-        #     else:
-        #         print("Le premier retard date d'il y a plus d'un an.")
-        #         # brw.premier_retard = brw.second_retard
-        #         # brw.second_retard = date_today
-        #         # brw.nb_retards = new_nb_ret-1
+    # met à jour le statut des emprunts et des utilisateurs
+    update_and_populate_db(date_today)
 
-        
-
-                ## Il faudrait faire une fonction récursive.
-             
-
-
-
-
-    # Number of visits to this view, as counted in the session variable.
+    # Nombre de visites de cette page
     num_visits = request.session.get('num_visits', 0)
     request.session['num_visits'] = num_visits + 1
 
-    # Update 
 
+    # met à jour le contexte
     context = {
         'date_today': date_today,
         'num_ouvrages': num_ouvrages,
@@ -158,11 +128,14 @@ class AuteurDetailView(generic.DetailView):
     model = Auteur
 
 class MonCompteListView(LoginRequiredMixin,generic.ListView):
-    """Generic class-based view listing books on loan to current user."""
+    """Generic class-based view """
+
     model = Emprunt
     template_name ='gestion/mon_compte.html'
     paginate_by = 10
-    
+
+    # méthodes de classes
+
     def get_queryset(self):
 
         connected_user = self.request.user
@@ -171,6 +144,10 @@ class MonCompteListView(LoginRequiredMixin,generic.ListView):
         return Emprunt.objects.filter(borrower = connected_profile).order_by('date_emprunt')
 
     def get_context_data(self,**kwargs):
+
+        # met à jour le statut des emprunts et des utilisateurs 
+        date_today = datetime.now(timezone.utc)
+        update_and_populate_db(date_today)
 
         connected_user = self.request.user
         connected_profile = Profile.objects.get(user=connected_user)
