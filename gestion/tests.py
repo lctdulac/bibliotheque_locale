@@ -1,3 +1,3 @@
-from django.test import TestCase
+####### Ce fichier définit les différents tests que nous pouvons utiliser pour notre application
 
-# Create your tests here.
+from django.test import TestCase

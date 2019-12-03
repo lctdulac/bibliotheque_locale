@@ -1,3 +1,5 @@
+####### Ce fichier définit les URLs propres à notre application "gestion"
+
 from django.urls import path
 from . import views
 

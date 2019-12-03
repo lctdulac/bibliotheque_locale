@@ -1,3 +1,5 @@
+####### Ce fichier définit les différentes vues de la page administrateur à partir des classes de bases du framework Django
+
 from django.contrib import admin
 from gestion.models import Ouvrage, Emprunt, Tarif, Auteur, Profile, Genre
 

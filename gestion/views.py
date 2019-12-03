@@ -1,3 +1,6 @@
+####### Ce fichier est le fichier principal qui définit les actions que réalisent l'application lors du chargement
+####### de chaque page (les 'vues').
+
 from django.shortcuts import render
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import generic
