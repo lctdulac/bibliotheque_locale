@@ -1,16 +1,52 @@
 ####### HOW TO INSTALL
 
 ### 1. Install the required python packages in the chosen environment
+
+Possible example if you have installed Anaconda Navigator
+
+Create a new virtual environment under Anaconda
+
+conda create -n djangoenv python=3.6 anaconda
+
+Activate this environment
+
+conda activate djangoenv
+
+Install django under this environment
+
+conda install -c anaconda django
+
+update all packages under djangoenv
+
+conda update -n djangoenv --all
+
 ### 2. Create a new mysql schema named bibliothèque_django 
 
 $ mysql -u yourusername -p
 $ msyql> create schema bibliothèque_django;
 
+CREATE USER 'yourusername'@'localhost' IDENTIFIED BY 'password';
+
+GRANT ALL PRIVILEGES ON bibliothèque_django TO 'newuser'@'localhost';
+
+
 ### 3. Go to the web_local_library directory
+
 ### 4. Run the following commands in your CLI:
 
-$ python manage.py loaddata db.json
+conda activate djangoenv
+
 $ python manage.py runserver
+
+Migrate your data under bibliothèque_django
+$ python manage.py makemigrations
+
+Migrate all modules by mobilising bibliothèque_django
+
+$ python manage.py migrate
+
+Upload all your local data
+$ python manage.py loaddata db.json
 
 ### 5. Access the user page via :
 
